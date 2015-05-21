@@ -19,9 +19,9 @@ var (
 )
 
 func main() {
-	var sources []*totp.TotpSource
 	flag.Parse()
 
+	var sources []*totp.Source
 
 	// Read the JSON config file.
 	sourceFile, err := os.Open(path.Join(os.Getenv("HOME"), ".totprc"))

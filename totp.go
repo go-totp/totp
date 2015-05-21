@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"encoding/base32"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -15,16 +16,34 @@ import (
 	"code.google.com/p/rsc/qr"
 )
 
-const (
-	period = 30
-	digits = 6
-)
-
-type TotpSource struct {
+// Source represent a totp source
+type Source struct {
 	Name   string `json:"name"`
 	Secret string `json:"secret"`
+	Period int    `json:"period"`
+	Digits int    `json:"digits"`
 }
 
+// Valid returns an error if Source is invalid, otherwize it returns nil
+func (s *Source) Valid() error {
+	if s.Name == "" {
+		return errors.New("Name is required")
+	}
+	if s.Secret == "" {
+		return errors.New("Secret is required")
+	}
+	if s.Period == 0 {
+		return errors.New("Period must be greater than 0")
+	}
+	if s.Digits == 0 {
+		return errors.New("Digits must be greater than 0")
+	}
+
+	return nil
+}
+
+// Totp generates a two factor authentication code
+//
 // Originally written by Joshua Peek <josh@joshpeek.com>
 // https://github.com/josh/totp/blob/9b587d6bc564eadeae4787a4dd571fd810fc0a8c/totp.go#L58
 //
@@ -48,11 +67,11 @@ type TotpSource struct {
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-func (t *TotpSource) Totp() string {
+func (t *Source) Totp() string {
 	key, _ := base32.StdEncoding.DecodeString(strings.ToUpper(t.Secret))
 	hash := hmac.New(sha1.New, key)
 	b := new(bytes.Buffer)
-	binary.Write(b, binary.BigEndian, time.Now().Unix()/period)
+	binary.Write(b, binary.BigEndian, time.Now().Unix()/int64(t.Period))
 	hash.Write(b.Bytes())
 
 	h := hash.Sum(nil)
@@ -61,12 +80,12 @@ func (t *TotpSource) Totp() string {
 	return fmt.Sprintf("%010d", c%100000000)[4:10]
 }
 
-// qrcode returns the QR code of the TotpSource in PNG format.
-func (t *TotpSource) Qrcode() ([]byte, error) {
+// Qrcode returns the QR code of the TotpSource in PNG format.
+func (t *Source) Qrcode() ([]byte, error) {
 	params := url.Values{
 		"secret": []string{t.Secret},
-		"digits": {strconv.Itoa(digits)},
-		"period": {strconv.Itoa(period)},
+		"digits": {strconv.Itoa(t.Digits)},
+		"period": {strconv.Itoa(t.Period)},
 	}
 
 	u := &url.URL{
