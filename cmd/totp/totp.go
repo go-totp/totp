@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,8 +13,15 @@ import (
 	"gopkg.in/totp.v0"
 )
 
+var (
+	qrcode = flag.Bool("qrcode", false, "Generate the QrCode in /tmp")
+	output = flag.String("output", "/tmp", "The folder in which to generate the QRcode images")
+)
+
 func main() {
 	var sources []*totp.TotpSource
+	flag.Parse()
+
 
 	// Read the JSON config file.
 	sourceFile, err := os.Open(path.Join(os.Getenv("HOME"), ".totprc"))
@@ -31,16 +39,18 @@ func main() {
 
 	// Iterate over the sources and print them all to the writer.
 	for _, s := range sources {
-		if s.Secret == "" {
-			fmt.Println("Secret is required. %q has no secret defined", s.Name)
+		if err := s.Valid(); err != nil {
+			fmt.Println("Source is invalid: %s", err)
 			os.Exit(1)
 		}
 
-		qrcode, err := s.Qrcode()
-		if err != nil {
-			log.Printf("Error generating the qrcode: %s", err)
-		} else {
-			ioutil.WriteFile(fmt.Sprintf("/tmp/%s.png", s.Name), qrcode, 0644)
+		if *qrcode {
+			qrcode, err := s.Qrcode()
+			if err != nil {
+				log.Printf("Error generating the qrcode: %s", err)
+			} else {
+				ioutil.WriteFile(fmt.Sprintf("%s/%s.png", *output, s.Name), qrcode, 0644)
+			}
 		}
 
 		fmt.Fprintf(w, "%s\t=> %s\n", s.Name, s.Totp())
