@@ -1,0 +1,56 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "code.google.com/p/rsc/gf256",
+			"revision": "2d8aa6027fab",
+			"revisionTime": "2014-11-30T16:07:12-05:00"
+		},
+		{
+			"path": "code.google.com/p/rsc/qr/libqrencode",
+			"revision": "2d8aa6027fab",
+			"revisionTime": "2014-11-30T16:07:12-05:00"
+		},
+		{
+			"path": "github.com/bmizerany/pat",
+			"revision": "b8a35001b773c267eb260a691f4e5499a3531600",
+			"revisionTime": "2014-06-25T16:47:03-07:00"
+		},
+		{
+			"path": "github.com/cpuguy83/go-md2man/md2man",
+			"revision": "71acacd42f85e5e82f70a55327789582a5200a90",
+			"revisionTime": "2015-08-03T11:35:22-04:00"
+		},
+		{
+			"path": "github.com/inconshreveable/mousetrap",
+			"revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+			"revisionTime": "2014-10-17T13:07:13-07:00"
+		},
+		{
+			"path": "github.com/rsc/rsc/qr",
+			"revision": "ccfe198e06521e3835029dbdd1ee3ecd799aa049",
+			"revisionTime": "2015-10-26T20:18:03-04:00"
+		},
+		{
+			"path": "github.com/russross/blackfriday",
+			"revision": "300106c228d52c8941d4b3de6054a6062a86dda3",
+			"revisionTime": "2015-11-17T09:23:12+02:00"
+		},
+		{
+			"path": "github.com/shurcooL/sanitized_anchor_name",
+			"revision": "10ef21a441db47d8b13ebcc5fd2310f636973c77",
+			"revisionTime": "2015-10-27T17:19:15-07:00"
+		},
+		{
+			"path": "github.com/spf13/cobra",
+			"revision": "1c44ec8d3f1552cac48999f9306da23c4d8a288b",
+			"revisionTime": "2015-11-24T10:32:17-05:00"
+		},
+		{
+			"path": "github.com/spf13/pflag",
+			"revision": "08b1a584251b5b62f458943640fc8ebd4d50aaa5",
+			"revisionTime": "2015-10-13T15:06:43-05:00"
+		}
+	]
+}
